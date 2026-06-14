@@ -1,4 +1,4 @@
-*{
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -12,11 +12,13 @@ body {
   display: flex;
   position: relative;
 }
-.container .header .title-and-switch{
+
+.container .header .title-and-switch {
   display: flex;
   flex-direction: row;
 }
-.container .header .title-and-switch h1{
+
+.container .header .title-and-switch h1 {
   position: absolute;
   top: 48px;
   left: 26px;
@@ -37,4 +39,21 @@ body {
 .container .header .light-theme-mobile-background {
   min-width: 375px;
   height: 200px;
+}
+
+.container .main .new-todo {
+  width: 327px;
+  height: 48px;
+  top: 108px;
+  left: 24px;
+  opacity: 1;
+  background-color: white;
+  align-items: center;
+  gap: 12px;
+  padding: 0 16px;
+  border-radius: 5px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+
+  display: flex;
+  position: absolute;
 }
