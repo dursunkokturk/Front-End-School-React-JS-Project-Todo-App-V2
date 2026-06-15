@@ -1,10 +1,29 @@
 import LightThemeMobileBackground from './assets/img/light-theme-mobile-background.png'
 import LightThemeDesktopBackground from './assets/img/light-theme-desktop-background.png'
 import SwitchingLightThemeDarkTheme from './assets/img/switching-light-theme-dark-theme.png'
+import SwitchingDarkThemeLightTheme from './assets/img/switching-dark-theme-light-theme.png'
 import TodoDelete from './assets/img/icon-todo-delete.png'
 import './App.css'
+import { useEffect, useState } from 'react'
 
 export default function App() {
+
+  const [darkTheme, setDarkTheme] = useState(() => {
+    return localStorage.getItem('theme') === 'dark';
+  });
+
+  useEffect(() => {
+    document.documentElement.setAttribute('dark-theme', darkTheme ? 'dark' : 'light');
+  }, [])
+
+  const toggleTheme = () => {
+    setDarkTheme(prev => {
+      const next = !prev;
+      localStorage.setItem('theme', next ? 'dark' : 'light');
+      document.documentElement.setAttribute('dark-theme', next ? 'dark' : 'light');
+      return next;
+    });
+  }
 
   return (
     <>
@@ -12,7 +31,19 @@ export default function App() {
         <header className="header">
           <div className="title-and-switch">
             <h1>TODO</h1>
-            <img src={SwitchingLightThemeDarkTheme} alt="" />
+            {darkTheme ? (
+              <img 
+                src={SwitchingDarkThemeLightTheme} 
+                onClick={toggleTheme}
+                alt=""
+              />
+            ) : (
+              <img 
+                src={SwitchingLightThemeDarkTheme} 
+                onClick={toggleTheme}
+                alt=""
+              />
+            )}
           </div>
           <img
             src={LightThemeMobileBackground}
