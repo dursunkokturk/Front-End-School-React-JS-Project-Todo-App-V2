@@ -1,6 +1,7 @@
 import LightThemeMobileBackground from './assets/img/light-theme-mobile-background.png'
 import LightThemeDesktopBackground from './assets/img/light-theme-desktop-background.png'
 import DarkThemeMobileBackground from './assets/img/dark-theme-mobile-background.png'
+import DarkThemeDesktopBackground from './assets/img/dark-theme-desktop-background.png'
 import SwitchingLightThemeDarkTheme from './assets/img/switching-light-theme-dark-theme.png'
 import SwitchingDarkThemeLightTheme from './assets/img/switching-dark-theme-light-theme.png'
 import TodoDelete from './assets/img/icon-todo-delete.png'
@@ -60,7 +61,7 @@ export default function App() {
             />
           )}
           <img
-            src={LightThemeDesktopBackground}
+            src={darkTheme ? DarkThemeDesktopBackground : LightThemeDesktopBackground}
             className='light-theme-desktop-background'
             alt=""
           />
