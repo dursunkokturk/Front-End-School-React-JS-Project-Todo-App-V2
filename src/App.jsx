@@ -150,9 +150,8 @@ export default function App() {
             <input 
               type="checkbox" 
               name="todo" 
-              value={newTodoText} 
               id="new-todo-check" 
-              onClick={addTodo}
+              disabled
             />
             <input
               type="text"
@@ -218,6 +217,7 @@ export default function App() {
                   src={TodoDelete}
                   alt="sil"
                   style={{ cursor: 'pointer' }}
+                  className='delete-icon'
                   onClick={() => {
                     deleteTodo(todo.id)
                   }}
