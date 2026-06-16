@@ -158,6 +158,7 @@ export default function App() {
                 setNewTodoText(e.target.value)
               }}
               onKeyDown={handleKeyDown}
+              className='new-todo-text'
             />
           </div>
           <div className="todos">
