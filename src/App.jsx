@@ -20,6 +20,7 @@ export default function App() {
   const [todos, setTodos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [errors, setErrors] = useState(null);
+  const [newTodoText, setNewTodoText] = useState("");
 
   useEffect(() => {
     document.documentElement.setAttribute('dark-theme', darkTheme ? 'dark' : 'light');
@@ -70,6 +71,34 @@ export default function App() {
     });
   }
 
+  // Input Elementine Girilen Yeni Gorevi Aliyoruz 
+  const addTodo = () => {
+    const text = newTodoText.trim();
+
+    // Gorev Yazilmadi Ise Ekleme Islemi Yaptirmiyoruz
+    if (!text) return;
+
+    const newTodo = {
+      id: Date.now(), // Gecici Benzersiz Id
+      todo: text,
+      completed: false
+    }
+
+    // Son Girilen Gorevi Listenin Basina Aliyoruz
+    setTodos(prev=>[newTodo,...prev]);
+
+    // Yeni Gorev Ekleme Isleminden Sonra 
+    // Input Elementinin Icini Siliyoruz
+    setNewTodoText("");
+  }
+
+  // Enter Tusu Ile Yeni Gorev Ekleme Islemi
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      addTodo();
+    }
+  };
+
   // Tamamlanmamis Todo Sayisi
   const activeCount = todos.filter(todo => !todo.completed).length;
 
@@ -119,8 +148,18 @@ export default function App() {
         </header>
         <main className="main">
           <div className="new-todo">
-            <input type="radio" name="todo" value="newtodo" id="new-todo-radio" />
-            <label htmlFor='new-todo-radio'>Create a new todo…</label>
+            <input type="checkbox" name="todo" value={newTodoText} id="new-todo-check" />
+            <input
+              type="text"
+              name="new-todo-text"
+              id="new-todo-text"
+              value={newTodoText}
+              placeholder='Create a new todo'
+              onChange={(e)=>{
+                setNewTodoText(e.target.value)
+              }}
+              onKeyDown={handleKeyDown}
+            />
           </div>
           <div className="todos">
 
@@ -144,8 +183,8 @@ export default function App() {
 
                   <input
                     type="checkbox"
-                    id={`todo.${todo.id}`}
-                    defaultChecked={todo.completed}
+                    id={`todo-${todo.id}`}
+                    checked={todo.completed}
                     onChange={() => {
                       setTodos(prev =>
                         prev.map(
