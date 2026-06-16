@@ -66,7 +66,6 @@ export default function App() {
     setDarkTheme(prev => {
       const next = !prev;
       localStorage.setItem('theme', next ? 'dark' : 'light');
-      // document.documentElement.setAttribute('dark-theme', next ? 'dark' : 'light');
       return next;
     });
   }
@@ -193,7 +192,6 @@ export default function App() {
                     }}
                     name="todo"
                     value="todo"
-                    id="todo-radio"
                   />
                   {todo.completed && (
                     <img
