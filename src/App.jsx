@@ -8,15 +8,57 @@ import TodoDelete from './assets/img/icon-todo-delete.png'
 import './App.css'
 import { useEffect, useState } from 'react'
 
+const API_URL = 'https://dummyjson.com/todos';
+
 export default function App() {
 
   const [darkTheme, setDarkTheme] = useState(() => {
     return localStorage.getItem('theme') === 'dark';
   });
 
+  const [todos, setTodos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [errors, setErrors] = useState(null);
+
   useEffect(() => {
     document.documentElement.setAttribute('dark-theme', darkTheme ? 'dark' : 'light');
   }, [darkTheme])
+
+  useEffect(() => {
+    const fetchTodos = async () => {
+      try {
+        setLoading(true);
+        setErrors(null);
+
+        const response = await fetch(`${API_URL}?_limit=5`);
+        if (!response.ok) {
+          throw new Error(`Hata:${response.status}`);
+        }
+
+        const data = await response.json();
+
+        // API Uzerinden Gelen Cevaba Bakiyoruz
+        console.log('Data', data);
+
+        // API Uzerinden Gelen Cevaplar Arasindan Kullanacagimiz Listeyi Aliyoruz
+        const todoList = data.todos;
+        console.log('TodoList', todoList);
+
+        // Aldigimiz Listeyi useState'e Gonderiyoruz
+        setTodos(todoList);
+      } catch (error) {
+
+        // Data'yi Alma Asamasinda Bir Hata Olursa useState Uzerinden Aliyoruz
+        setErrors(error.message);
+
+        console.log('fetch Hatasi', errors);
+      } finally {
+        // Hata Olsa Da Olmasa Da loading Biter
+        setLoading(false);
+      }
+    }
+    fetchTodos();
+  }, [])
 
   const toggleTheme = () => {
     setDarkTheme(prev => {
@@ -26,6 +68,14 @@ export default function App() {
       return next;
     });
   }
+
+  // Tamamlanmamis Todo Sayisi
+  const activeCount = todos.filter(todo => !todo.completed).length;
+
+  // Todo Sil (Sadece state'ten — dummyjson Gercek Silme Yapmaz)
+  const deleteTodo = (id) => {
+    setTodos(prev => prev.filter(todo => todo.id !== id));
+  };
 
   return (
     <>
@@ -72,37 +122,69 @@ export default function App() {
             <label htmlFor='new-todo-radio'>Create a new todo…</label>
           </div>
           <div className="todos">
-            <div className="todo">
-              <input type="radio" name="todo" value="todo" id="todo-radio" />
-              <label htmlFor='todo-radio'>Complete online JavaScript course</label>
-              <img src={TodoDelete} alt="" />
-            </div>
-            <div className="todo">
-              <input type="radio" name="todo" value="todo" id="todo-radio" />
-              <label htmlFor='todo-radio'>Jog around the park 3x</label>
-              <img src={TodoDelete} alt="" />
-            </div>
-            <div className="todo">
-              <input type="radio" name="todo" value="todo" id="todo-radio" />
-              <label htmlFor='todo-radio'>10 minutes meditation</label>
-              <img src={TodoDelete} alt="" />
-            </div>
-            <div className="todo">
-              <input type="radio" name="todo" value="todo" id="todo-radio" />
-              <label htmlFor='todo-radio'>Read for 1 hour</label>
-              <img src={TodoDelete} alt="" />
-            </div>
-            <div className="todo">
-              <input type="radio" name="todo" value="todo" id="todo-radio" />
-              <label htmlFor='todo-radio'>Pick up groceries</label>
-              <img src={TodoDelete} alt="" />
-            </div>
-            <div className="todo">
-              <div className="selects">
-                <h6>5 items left</h6>
-                <h6>Clear Completed</h6>
+
+            {/* Todos'lar Alinirken Yuklendigini Belirtiyoruz */}
+            {loading && (
+              <div className="todo">
+                <label>Yükleniyor...</label>
               </div>
-            </div>
+            )}
+
+            {/* Todo'larin Api Uzerinden Alinmasi Asamasinda Hata Olursa Gosteriyoruz */}
+            {errors && (
+              <div className="todo">
+                <label style={{ color: 'red' }}>{errors}</label>
+              </div>
+            )}
+
+            {!loading && !errors && todos.map(todo => (
+              <div className="todo" key={todo.id}>
+                <input
+                  type="checkbox"
+                  id={`todo.${todo.id}`}
+                  defaultChecked={todo.completed}
+                  onChange={() => {
+                    setTodos(prev =>
+                      prev.map(
+                        t => t.id === todo.id ? { ...t, completed: !t.completed } : t
+                      ))
+                  }}
+                  name="todo"
+                  value="todo"
+                  id="todo-radio"
+                />
+                <label
+                  htmlFor={`todo-${todo.id}`}
+                  style={{ textDecoration: todo.completed ? 'line-through' : 'none' }}
+                >
+                  {todo.todo}
+                </label>
+                <img
+                  src={TodoDelete}
+                  alt="sil"
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => {
+                    deleteTodo(todo.id)
+                  }}
+                />
+              </div>
+            ))}
+
+            {!loading && (
+              <div className="todo">
+                <div className="selects">
+                  <h6>{activeCount} items left</h6>
+                  <h6
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => setTodos(
+                      prev => prev.filter(t => !t.completed)
+                    )}
+                  >
+                    Clear Completed
+                  </h6>
+                </div>
+              </div>
+            )}
           </div>
         </main>
         <footer className="footer">
