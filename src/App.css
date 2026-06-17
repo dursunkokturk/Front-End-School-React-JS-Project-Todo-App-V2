@@ -252,6 +252,11 @@ input[type="checkbox"]:checked {
   cursor: pointer;
 }
 
+/* Active Filtre Butonu */
+.active-filter {
+  color: #3A7CFD !important;
+}
+
 @media(width>1109px) {
   .container {
     max-width: 1440px;

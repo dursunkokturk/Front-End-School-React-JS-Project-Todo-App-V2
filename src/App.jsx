@@ -21,6 +21,7 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [errors, setErrors] = useState(null);
   const [newTodoText, setNewTodoText] = useState("");
+  const [filter, setFilter] = useState("all");
 
   useEffect(() => {
     document.documentElement.setAttribute('dark-theme', darkTheme ? 'dark' : 'light');
@@ -84,7 +85,7 @@ export default function App() {
     }
 
     // Son Girilen Gorevi Listenin Basina Aliyoruz
-    setTodos(prev=>[newTodo,...prev]);
+    setTodos(prev => [newTodo, ...prev]);
 
     // Yeni Gorev Ekleme Isleminden Sonra 
     // Input Elementinin Icini Siliyoruz
@@ -105,6 +106,14 @@ export default function App() {
   const deleteTodo = (id) => {
     setTodos(prev => prev.filter(todo => todo.id !== id));
   };
+
+  // Gorevler Listesinde Tamamlanmis ve 
+  // Tamamlanmamis Tum Tum Gorevleri Listeliyoruz
+  const filteredTodos = todos.filter(todo => {
+    if (filter === "active") return !todo.completed;
+    if (filter === "completed") return todo.completed;
+    return true;
+  })
 
   return (
     <>
@@ -147,10 +156,10 @@ export default function App() {
         </header>
         <main className="main">
           <div className="new-todo">
-            <input 
-              type="checkbox" 
-              name="todo" 
-              id="new-todo-check" 
+            <input
+              type="checkbox"
+              name="todo"
+              id="new-todo-check"
               disabled
             />
             <input
@@ -159,7 +168,7 @@ export default function App() {
               id="new-todo-text"
               value={newTodoText}
               placeholder='Create a new todo'
-              onChange={(e)=>{
+              onChange={(e) => {
                 setNewTodoText(e.target.value)
               }}
               onKeyDown={handleKeyDown}
@@ -182,7 +191,7 @@ export default function App() {
               </div>
             )}
 
-            {!loading && !errors && todos.map(todo => (
+            {!loading && !errors && filteredTodos.map(todo => (
               <div className="todo" key={todo.id}>
                 <div className="checkbox-wrapper">
 
@@ -244,7 +253,13 @@ export default function App() {
         </main>
         <footer className="footer">
           <div className="all-active-completed">
-            <h6>All</h6>
+            <h6
+              style={{ cursor: "pointer" }}
+              onClick={() => setFilter("all")}
+              className={filter === "all" ? "active-filter" : ""}
+            >
+              All
+            </h6>
             <h6>Active</h6>
             <h6>Completed</h6>
           </div>
